@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DanAIB Outreach Beast — Pro Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070F;--bg2:#0D0D1A;--bg3:#131320;--card:#181828;--card2:#1E1E30;
+  --gold:#FFB800;--orange:#FF6B35;--cyan:#00D4FF;--green:#00E676;--purple:#9B5DE5;
+  --red:#FF4B4B;--text:#F0F0FF;--muted:#6666AA;--border:rgba(255,255,255,0.07);
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1.25rem;font-size:0.85rem;z-index:9999;transform:translateY(120%);transition:transform .3s;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+#toast.show{transform:translateY(0)}
+#toast.success{border-color:rgba(0,230,118,0.3);color:var(--green)}
+#toast.error{border-color:rgba(255,75,75,0.3);color:var(--red)}
+#toast.info{border-color:rgba(255,184,0,0.3);color:var(--gold)}
+
+/* HEADER */
+header{background:rgba(7,7,15,0.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 1.5rem;position:sticky;top:0;z-index:200}
+.hdr{max-width:1400px;margin:0 auto;height:60px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.logo{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.hdr-badges{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap}
+.badge{font-size:0.7rem;font-weight:600;padding:0.25rem 0.7rem;border-radius:50px;display:flex;align-items:center;gap:0.35rem;white-space:nowrap}
+.badge-live{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.25);color:var(--green)}
+.badge-ai{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--cyan)}
+.badge-pro{background:rgba(155,93,229,0.1);border:1px solid rgba(155,93,229,0.25);color:var(--purple)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 60px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.25rem;overflow-y:auto;height:calc(100vh - 60px);position:sticky;top:60px}
+.s-section{margin-bottom:1.5rem}
+.s-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:600;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+.s-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.field{margin-bottom:0.85rem}
+.fl{font-size:0.75rem;color:var(--muted);display:block;margin-bottom:0.35rem;font-weight:500}
+input,select,textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:0.6rem 0.85rem;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;outline:none;transition:border-color .2s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,184,0,0.45)}
+select option{background:var(--bg3)}
+textarea{resize:vertical;line-height:1.6}
+.row2{display:grid;grid-template-columns:1fr auto;gap:0.4rem}
+.icon-btn{background:rgba(255,184,0,0.12);border:1px solid rgba(255,184,0,0.3);color:var(--gold);border-radius:9px;padding:0 0.75rem;cursor:pointer;font-size:1.1rem;flex-shrink:0;transition:background .2s}
+.icon-btn:hover{background:rgba(255,184,0,0.22)}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.4rem;min-height:12px}
+.ctag{background:rgba(255,184,0,0.08);border:1px solid rgba(255,184,0,0.2);color:var(--gold);font-size:0.7rem;padding:0.22rem 0.6rem;border-radius:50px;display:inline-flex;align-items:center;gap:0.3rem;cursor:pointer;transition:all .15s}
+.ctag:hover{background:rgba(255,75,75,0.1);border-color:rgba(255,75,75,0.3);color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem}
+.tgl{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.45rem 0.5rem;font-size:0.72rem;color:var(--muted);cursor:pointer;text-align:center;font-family:'Space Grotesk',sans-serif;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:0.2rem;line-height:1.2}
+.tgl.on{background:rgba(255,184,0,0.08);border-color:rgba(255,184,0,0.35);color:var(--gold)}
+.tgl.on-cyan{background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.3);color:var(--cyan)}
+.tgl svg{width:15px;height:15px;flex-shrink:0}
+.api-row{display:flex;flex-direction:column;gap:0.4rem}
+.api-input{font-size:0.75rem;padding:0.5rem 0.75rem;letter-spacing:0.5px}
+.hint{font-size:0.68rem;color:var(--muted);line-height:1.5;margin-top:0.3rem}
+.hint a{color:var(--cyan);text-decoration:none}
+.run-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;border:none;border-radius:50px;padding:0.82rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.92rem;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:0.25rem;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+.run-btn:hover{opacity:0.88}
+.run-btn:active{transform:scale(0.98)}
+.run-btn:disabled{opacity:0.38;cursor:not-allowed}
+
+/* MAIN */
+.main{overflow-y:auto;height:calc(100vh - 60px)}
+.main-pad{padding:1.25rem;max-width:1080px;margin:0 auto}
+
+/* TABS */
+.tabs{display:flex;gap:0.4rem;background:var(--bg2);border-radius:12px;padding:0.35rem;border:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto}
+.tab{flex:1;background:transparent;border:none;color:var(--muted);padding:0.55rem 0.7rem;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;text-align:center}
+.tab.on{background:var(--card2);color:var(--text)}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.25rem}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem}
+.sc-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;line-height:1}
+.sc-num.gold{background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sc-num.cyan{color:var(--cyan)}
+.sc-num.green{color:var(--green)}
+.sc-num.purple{color:var(--purple)}
+.sc-lbl{font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
+
+/* LEAD CARDS */
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem}
+.rh-left{font-size:0.82rem;color:var(--muted)}
+.rh-left strong{color:var(--gold)}
+.rh-actions{display:flex;gap:0.5rem}
+.sm-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:0.38rem 0.85rem;font-size:0.75rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .2s;display:flex;align-items:center;gap:0.35rem;white-space:nowrap}
+.sm-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:0.85rem;overflow:hidden;transition:border-color .25s}
+.lcard:hover{border-color:rgba(255,184,0,0.18)}
+.lcard-head{padding:1rem 1.1rem;display:flex;align-items:flex-start;gap:0.85rem}
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--orange));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.88rem;color:#000;flex-shrink:0}
+.lcard-info{flex:1;min-width:0}
+.lcard-name{font-weight:700;font-size:0.95rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap}
+.score-pill{font-size:0.68rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:50px;flex-shrink:0}
+.score-high{background:rgba(0,230,118,0.15);color:var(--green);border:1px solid rgba(0,230,118,0.25)}
+.score-mid{background:rgba(255,184,0,0.12);color:var(--gold);border:1px solid rgba(255,184,0,0.22)}
+.score-low{background:rgba(155,93,229,0.12);color:var(--purple);border:1px solid rgba(155,93,229,0.22)}
+.lcard-role{font-size:0.75rem;color:var(--cyan);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:0.15rem}
+.lcard-meta{font-size:0.75rem;color:var(--muted);margin-top:0.2rem;line-height:1.5}
+.lcard-btns{display:flex;gap:0.4rem;flex-shrink:0;flex-wrap:wrap}
+.lb{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:0.35rem 0.65rem;font-size:0.72rem;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .2s;white-space:nowrap}
+.lb:hover{border-color:var(--gold);color:var(--gold)}
+.lb.primary{background:rgba(255,184,0,0.1);border-color:rgba(255,184,0,0.3);color:var(--gold)}
+.lcard-contacts{padding:0 1.1rem 0.85rem;display:flex;flex-wrap:wrap;gap:0.4rem}
+.chip{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.72rem;padding:0.28rem 0.65rem;border-radius:50px;border:1px solid var(--border);color:var(--muted);text-decoration:none;background:var(--bg3);transition:all .18s;cursor:pointer}
+.chip:hover{border-color:var(--cyan);color:var(--cyan)}
+.chip.gold-chip{border-color:rgba(255,184,0,0.25);color:var(--gold)}
+.chip svg{width:11px;height:11px;flex-shrink:0}
+.chip-real{border-color:rgba(0,230,118,0.25);color:var(--green)}
+
+/* OUTREACH PANEL */
+.opanel{background:var(--bg3);border-top:1px solid var(--border);padding:1rem 1.1rem;display:none}
+.opanel.open{display:block}
+.otabs{display:flex;gap:0.35rem;margin-bottom:0.75rem;flex-wrap:wrap}
+.otab{background:transparent;border:1px solid var(--border);border-radius:6px;padding:0.28rem 0.65rem;font-size:0.7rem;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .2s}
+.otab.on{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:var(--cyan)}
+.omsg{font-size:0.8rem;line-height:1.75;color:var(--text);white-space:pre-wrap;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:0.85rem;margin-bottom:0.65rem;max-height:240px;overflow-y:auto}
+.oactions{display:flex;gap:0.5rem;flex-wrap:wrap}
+.oa-btn{padding:0.38rem 0.85rem;border-radius:7px;font-size:0.73rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:0.35rem}
+.oa-copy{background:rgba(255,184,0,0.12);color:var(--gold)}
+.oa-copy:hover{background:rgba(255,184,0,0.22)}
+.oa-wa{background:rgba(0,230,118,0.12);color:var(--green)}
+.oa-wa:hover{background:rgba(0,230,118,0.22)}
+.oa-mail{background:rgba(0,212,255,0.1);color:var(--cyan)}
+.oa-mail:hover{background:rgba(0,212,255,0.2)}
+.oa-seq{background:rgba(155,93,229,0.1);color:var(--purple)}
+.oa-seq:hover{background:rgba(155,93,229,0.2)}
+
+/* SEQUENCE PANEL */
+.seqpanel{background:var(--bg);border:1px solid rgba(155,93,229,0.2);border-radius:10px;padding:1rem;margin-top:0.65rem;display:none}
+.seqpanel.open{display:block}
+.seq-step{margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.seq-step:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.seq-step-label{font-size:0.7rem;color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+.seq-step-label::before{content:'';width:20px;height:2px;background:var(--purple);border-radius:2px}
+.seq-msg{font-size:0.78rem;line-height:1.7;color:var(--text);white-space:pre-wrap;background:var(--bg2);border-radius:8px;padding:0.75rem}
+
+/* BOOKING TAB */
+.booking-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;max-width:600px}
+.booking-form h3{font-family:'Syne',sans-serif;font-size:1.2rem;margin-bottom:0.4rem}
+.booking-form p{font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.booking-preview{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-top:1rem;font-size:0.8rem;line-height:1.7;color:var(--muted)}
+.booking-preview strong{color:var(--text);display:block;margin-bottom:0.5rem}
+.copy-link-row{display:flex;gap:0.5rem;margin-top:0.75rem}
+.copy-link-row input{flex:1;font-size:0.75rem;padding:0.5rem 0.75rem;background:var(--bg)}
+
+/* TRACKER */
+.trk-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.65rem;display:flex;align-items:center;gap:0.85rem}
+.trk-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--orange));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0}
+.trk-info{flex:1;min-width:0}
+.trk-name{font-weight:600;font-size:0.88rem}
+.trk-sub{font-size:0.72rem;color:var(--muted);margin-top:0.1rem}
+.trk-right{display:flex;align-items:center;gap:0.5rem}
+.status-sel{width:auto;padding:0.3rem 0.55rem;font-size:0.72rem;border-radius:7px}
+.del-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.25rem;transition:color .2s}
+.del-btn:hover{color:var(--red)}
+.score-bar-wrap{margin-top:0.3rem;display:flex;align-items:center;gap:0.5rem}
+.score-bar{height:3px;border-radius:2px;background:var(--border);flex:1;overflow:hidden}
+.score-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--green))}
+.score-txt{font-size:0.65rem;color:var(--muted);white-space:nowrap}
+
+/* FF TAB */
+.ff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.85rem}
+.ff-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;transition:border-color .2s}
+.ff-card:hover{border-color:rgba(255,184,0,0.2)}
+.ff-card-title{font-weight:700;font-size:0.88rem;margin-bottom:0.3rem;display:flex;align-items:center;gap:0.5rem}
+.ff-card-sub{font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.5}
+.ff-links{display:flex;flex-direction:column;gap:0.35rem}
+.ff-link{display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--muted);text-decoration:none;padding:0.4rem 0.65rem;background:var(--bg3);border-radius:7px;border:1px solid var(--border);transition:all .2s}
+.ff-link:hover{border-color:var(--cyan);color:var(--cyan)}
+.ff-link svg{width:13px;height:13px;flex-shrink:0}
+
+/* EMPTY / LOADING */
+.empty{text-align:center;padding:3.5rem 2rem;color:var(--muted)}
+.empty .eicon{font-size:2.5rem;margin-bottom:0.85rem;opacity:0.4}
+.empty h3{font-family:'Syne',sans-serif;font-size:1.15rem;color:var(--text);opacity:0.55;margin-bottom:0.4rem}
+.empty p{font-size:0.82rem;line-height:1.7;max-width:340px;margin:0 auto}
+.loading{display:flex;flex-direction:column;align-items:center;gap:0.85rem;padding:3rem}
+.spin{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--muted);font-size:0.82rem}
+.loading-steps{display:flex;flex-direction:column;gap:0.35rem;margin-top:0.5rem}
+.lstep{font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:0.4rem;transition:color .3s}
+.lstep.done{color:var(--green)}
+.lstep.active{color:var(--gold)}
+
+/* Arabic panel */
+.ar-panel{background:rgba(255,184,0,0.04);border:1px solid rgba(255,184,0,0.15);border-radius:9px;padding:0.85rem;margin-top:0.65rem;direction:rtl;text-align:right;font-size:0.82rem;line-height:1.85;color:var(--text);white-space:pre-wrap;display:none}
+.ar-panel.show{display:block}
+
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  .sidebar{height:auto;position:static;border-right:none;border-bottom:1px solid var(--border)}
+  .main{height:auto}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<header>
+  <div class="hdr">
+    <div class="logo">⚡ DanAIB Outreach Beast</div>
+    <div class="hdr-badges">
+      <div class="badge badge-live"><span class="dot"></span>AI Powered</div>
+      <div class="badge badge-ai">Claude Sonnet</div>
+      <div class="badge badge-pro">Pro Edition</div>
+    </div>
+  </div>
+</header>
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="s-section">
+    <div class="s-label">API Keys (Optional)</div>
+    <div class="field">
+      <label class="fl">Google Search API Key</label>
+      <input class="api-input" type="password" id="googleKey" placeholder="AIza... (for real searches)">
+      <div class="hint">Get free key at <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Custom Search API</div>
+    </div>
+    <div class="field">
+      <label class="fl">Google Search Engine ID (CX)</label>
+      <input class="api-input" type="text" id="googleCX" placeholder="Your CX ID">
+    </div>
+    <div class="field">
+      <label class="fl">Hunter.io API Key</label>
+      <input class="api-input" type="password" id="hunterKey" placeholder="hunter.io free key">
+      <div class="hint">Free 25 searches/mo at <a href="https://hunter.io" target="_blank">hunter.io</a></div>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Target Countries</div>
+    <div class="field">
+      <div class="row2">
+        <input type="text" id="cInput" placeholder="Type country + Enter">
+        <button class="icon-btn" onclick="addC()">+</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.65rem">
+      <button class="tgl" onclick="addPreset('Kuwait')">🇰🇼<span>Kuwait</span></button>
+      <button class="tgl" onclick="addPreset('UAE')">🇦🇪<span>UAE</span></button>
+      <button class="tgl" onclick="addPreset('Oman')">🇴🇲<span>Oman</span></button>
+      <button class="tgl" onclick="addPreset('Jordan')">🇯🇴<span>Jordan</span></button>
+      <button class="tgl" onclick="addPreset('Qatar')">🇶🇦<span>Qatar</span></button>
+      <button class="tgl" onclick="addPreset('Bahrain')">🇧🇭<span>Bahrain</span></button>
+      <button class="tgl" onclick="addPreset('Switzerland')">🇨🇭<span>Swiss</span></button>
+      <button class="tgl" onclick="addPreset('Norway')">🇳🇴<span>Norway</span></button>
+      <button class="tgl" onclick="addPreset('Singapore')">🇸🇬<span>SG</span></button>
+      <button class="tgl" onclick="addPreset('Saudi Arabia')">🇸🇦<span>KSA</span></button>
+    </div>
+    <div class="tag-wrap" id="cTags"></div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Target Type</div>
+    <div class="grid2" id="tGrid">
+      <button class="tgl on" data-t="Film Directors">🎬<span>Directors</span></button>
+      <button class="tgl on" data-t="Screenwriters">✍️<span>Writers</span></button>
+      <button class="tgl on" data-t="Actors">🎭<span>Actors</span></button>
+      <button class="tgl" data-t="Producers">🎥<span>Producers</span></button>
+      <button class="tgl" data-t="Business Owners">💼<span>Business</span></button>
+      <button class="tgl" data-t="Music Artists">🎵<span>Musicians</span></button>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Source Platform</div>
+    <div class="field">
+      <select id="srcSel">
+        <option value="google">Google Search</option>
+        <option value="filmfreeway">FilmFreeway</option>
+        <option value="imdb">IMDb</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="instagram">Instagram</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Outreach Channels</div>
+    <div class="grid3" id="pGrid">
+      <button class="tgl on on-cyan" data-p="email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </button>
+      <button class="tgl on on-cyan" data-p="instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        Instagram
+      </button>
+      <button class="tgl on on-cyan" data-p="linkedin">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </button>
+      <button class="tgl" data-p="twitter">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X/Twitter
+      </button>
+      <button class="tgl on on-cyan" data-p="whatsapp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+      <button class="tgl" data-p="arabic">
+        🌙 Arabic
+      </button>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Extra Context</div>
+    <textarea id="extraCtx" style="min-height:58px;font-size:0.78rem" placeholder="Recent project, festival, specific need..."></textarea>
+  </div>
+
+  <button class="run-btn" id="runBtn" onclick="runSearch()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Find Leads & Generate Outreach
+  </button>
+</aside>
+<!-- MAIN -->
+<main class="main">
+<div class="main-pad">
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('leads',this)">🔍 Leads</button>
+    <button class="tab" onclick="switchTab('ff',this)">🎬 FilmFreeway</button>
+    <button class="tab" onclick="switchTab('tracker',this)">📋 Tracker</button>
+    <button class="tab" onclick="switchTab('booking',this)">📅 Booking Page</button>
+    <button class="tab" onclick="switchTab('finder',this)">🔎 Email Finder</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="sc"><div class="sc-num gold" id="sLeads">0</div><div class="sc-lbl">Leads Found</div></div>
+    <div class="sc"><div class="sc-num cyan" id="sSaved">0</div><div class="sc-lbl">Saved</div></div>
+    <div class="sc"><div class="sc-num green" id="sSent">0</div><div class="sc-lbl">Outreach Sent</div></div>
+    <div class="sc"><div class="sc-num purple" id="sReplied">0</div><div class="sc-lbl">Replied</div></div>
+  </div>
+
+  <!-- LEADS TAB -->
+  <div id="tab-leads">
+    <div id="leadsContent">
+      <div class="empty">
+        <div class="eicon">🎯</div>
+        <h3>Ready to hunt leads</h3>
+        <p>Add countries, pick your targets and channels, then hit Find Leads. The AI will generate scored leads with personalized outreach for every platform you selected.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILMFREEWAY TAB -->
+  <div id="tab-ff" style="display:none">
+    <div style="background:linear-gradient(135deg,rgba(255,184,0,0.05),rgba(0,212,255,0.04));border:1px solid rgba(255,184,0,0.12);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1.1rem;font-size:0.8rem;line-height:1.7;color:var(--muted)">
+      <strong style="color:var(--gold)">FilmFreeway Strategy —</strong> Many creators list public emails and social handles on their FilmFreeway profiles. Use the direct search links below to find them, then paste their info into the Email Finder tab to look up verified emails.
+    </div>
+    <div id="ffContent">
+      <div class="empty"><div class="eicon">🎬</div><h3>Add countries first</h3><p>Select countries in the sidebar to generate FilmFreeway search links per country and target type.</p></div>
+    </div>
+  </div>
+
+  <!-- TRACKER TAB -->
+  <div id="tab-tracker" style="display:none">
+    <div class="stats-bar" style="margin-bottom:1rem">
+      <div class="sc"><div class="sc-num gold" id="ts1">0</div><div class="sc-lbl">Total Saved</div></div>
+      <div class="sc"><div class="sc-num cyan" id="ts2">0</div><div class="sc-lbl">Contacted</div></div>
+      <div class="sc"><div class="sc-num green" id="ts3">0</div><div class="sc-lbl">Replied</div></div>
+      <div class="sc"><div class="sc-num purple" id="ts4">0</div><div class="sc-lbl">Converted</div></div>
+    </div>
+    <div class="rh">
+      <div class="rh-left">Your outreach pipeline</div>
+      <div class="rh-actions">
+        <button class="sm-btn" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="sm-btn" onclick="clearAll()">🗑 Clear All</button>
+      </div>
+    </div>
+    <div id="trackerContent"><div class="empty"><div class="eicon">📋</div><h3>No leads saved yet</h3><p>Find leads and save them here to track your outreach pipeline.</p></div></div>
+  </div>
+
+  <!-- BOOKING TAB -->
+  <div id="tab-booking" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+      <div class="booking-form">
+        <h3>Booking Page Generator</h3>
+        <p>Create a professional booking link to embed in all your outreach messages — lets clients schedule a discovery call or submit a project brief directly.</p>
+        <div class="field"><label class="fl">Your Name</label><input type="text" id="bkName" value="Ibrahim Abdul Mumeen (OfficialDanAIB)"></div>
+        <div class="field"><label class="fl">Tagline</label><input type="text" id="bkTag" value="2D/3D Character Artist & Animation Studio Head"></div>
+        <div class="field"><label class="fl">Session Duration</label>
+          <select id="bkDur"><option>15 minutes</option><option selected>30 minutes</option><option>45 minutes</option><option>1 hour</option></select>
+        </div>
+        <div class="field"><label class="fl">Session Type</label>
+          <select id="bkType"><option>Discovery Call</option><option>Project Brief Review</option><option>Portfolio Walkthrough</option><option>Collaboration Discussion</option></select>
+        </div>
+        <div class="field"><label class="fl">WhatsApp for bookings</label><input type="text" id="bkWA" value="+2347037572946"></div>
+        <div class="field"><label class="fl">Email for bookings</label><input type="text" id="bkEmail" value="themediaexcellency@gmail.com"></div>
+        <button class="run-btn" onclick="genBooking()" style="margin-top:0.5rem">Generate Booking Message</button>
+      </div>
+      <div>
+        <div class="booking-preview" id="bkPreview">
+          <strong>📅 Your booking message will appear here</strong>
+          Fill in the form and click Generate to create a professional booking CTA you can paste into every outreach message.
+        </div>
+        <div class="copy-link-row">
+          <input type="text" id="bkLink" readonly placeholder="Generated booking message..." style="font-size:0.72rem">
+          <button class="sm-btn" onclick="copyBooking()">Copy</button>
+        </div>
+        <div style="margin-top:1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem">
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:600;margin-bottom:0.5rem">💡 Where to use this</div>
+          <ul style="font-size:0.75rem;color:var(--muted);line-height:1.9;padding-left:1rem">
+            <li>End of every email outreach</li>
+            <li>Instagram DM follow-up</li>
+            <li>LinkedIn connection message</li>
+            <li>WhatsApp introduction</li>
+            <li>Your portfolio website footer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL FINDER TAB -->
+  <div id="tab-finder" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+      <div class="booking-form">
+        <h3>Email Finder</h3>
+        <p>Enter a person's name and their company/website domain to find their verified email address via Hunter.io. Requires a free Hunter.io API key in the sidebar.</p>
+        <div class="field"><label class="fl">Full Name</label><input type="text" id="fnName" placeholder="e.g. Mohammed Al-Rashid"></div>
+        <div class="field"><label class="fl">Company Domain</label><input type="text" id="fnDomain" placeholder="e.g. aljazeera.net or company.com"></div>
+        <div class="field"><label class="fl">Role / Title (optional)</label><input type="text" id="fnRole" placeholder="e.g. Film Director"></div>
+        <button class="run-btn" onclick="findEmail()" id="finderBtn">🔎 Find Email</button>
+        <div id="finderResult" style="margin-top:1rem"></div>
+      </div>
+      <div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem">
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:600;margin-bottom:0.75rem">🔍 How to find leads manually</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.9">
+            <div style="margin-bottom:0.5rem"><strong style="color:var(--text)">FilmFreeway</strong><br>Search filmfreeway.com → open a creator's profile → look for email/website in bio</div>
+            <div style="margin-bottom:0.5rem"><strong style="color:var(--text)">IMDb</strong><br>imdb.com → search name → check "Contact" or agency info in bio</div>
+            <div style="margin-bottom:0.5rem"><strong style="color:var(--text)">LinkedIn</strong><br>Search name + "film director Kuwait" → check contact info section</div>
+            <div><strong style="color:var(--text)">Instagram</strong><br>Search name → bio link often leads to website with email</div>
+          </div>
+        </div>
+        <div style="margin-top:0.85rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem">
+          <div style="font-size:0.75rem;color:var(--cyan);font-weight:600;margin-bottom:0.5rem">💡 Pro Tip</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.7">After finding an email with Hunter.io, go back to the Leads tab, save that person as a lead, and the AI will generate a full personalized 3-email follow-up sequence for them.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main-pad -->
+</main>
+</div><!-- end app -->
+<script>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="s-section">
+    <div class="s-label">API Keys (Optional)</div>
+    <div class="field">
+      <label class="fl">Google Search API Key</label>
+      <input class="api-input" type="password" id="googleKey" placeholder="AIza... (for real searches)">
+      <div class="hint">Get free key at <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Custom Search API</div>
+    </div>
+    <div class="field">
+      <label class="fl">Google Search Engine ID (CX)</label>
+      <input class="api-input" type="text" id="googleCX" placeholder="Your CX ID">
+    </div>
+    <div class="field">
+      <label class="fl">Hunter.io API Key</label>
+      <input class="api-input" type="password" id="hunterKey" placeholder="hunter.io free key">
+      <div class="hint">Free 25 searches/mo at <a href="https://hunter.io" target="_blank">hunter.io</a></div>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Target Countries</div>
+    <div class="field">
+      <div class="row2">
+        <input type="text" id="cInput" placeholder="Type country + Enter">
+        <button class="icon-btn" onclick="addC()">+</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.65rem">
+      <button class="tgl" onclick="addPreset('Kuwait')">🇰🇼<span>Kuwait</span></button>
+      <button class="tgl" onclick="addPreset('UAE')">🇦🇪<span>UAE</span></button>
+      <button class="tgl" onclick="addPreset('Oman')">🇴🇲<span>Oman</span></button>
+      <button class="tgl" onclick="addPreset('Jordan')">🇯🇴<span>Jordan</span></button>
+      <button class="tgl" onclick="addPreset('Qatar')">🇶🇦<span>Qatar</span></button>
+      <button class="tgl" onclick="addPreset('Bahrain')">🇧🇭<span>Bahrain</span></button>
+      <button class="tgl" onclick="addPreset('Switzerland')">🇨🇭<span>Swiss</span></button>
+      <button class="tgl" onclick="addPreset('Norway')">🇳🇴<span>Norway</span></button>
+      <button class="tgl" onclick="addPreset('Singapore')">🇸🇬<span>SG</span></button>
+      <button class="tgl" onclick="addPreset('Saudi Arabia')">🇸🇦<span>KSA</span></button>
+    </div>
+    <div class="tag-wrap" id="cTags"></div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Target Type</div>
+    <div class="grid2" id="tGrid">
+      <button class="tgl on" data-t="Film Directors">🎬<span>Directors</span></button>
+      <button class="tgl on" data-t="Screenwriters">✍️<span>Writers</span></button>
+      <button class="tgl on" data-t="Actors">🎭<span>Actors</span></button>
+      <button class="tgl" data-t="Producers">🎥<span>Producers</span></button>
+      <button class="tgl" data-t="Business Owners">💼<span>Business</span></button>
+      <button class="tgl" data-t="Music Artists">🎵<span>Musicians</span></button>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Source Platform</div>
+    <div class="field">
+      <select id="srcSel">
+        <option value="google">Google Search</option>
+        <option value="filmfreeway">FilmFreeway</option>
+        <option value="imdb">IMDb</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="instagram">Instagram</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Outreach Channels</div>
+    <div class="grid3" id="pGrid">
+      <button class="tgl on on-cyan" data-p="email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </button>
+      <button class="tgl on on-cyan" data-p="instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        Instagram
+      </button>
+      <button class="tgl on on-cyan" data-p="linkedin">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </button>
+      <button class="tgl" data-p="twitter">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X/Twitter
+      </button>
+      <button class="tgl on on-cyan" data-p="whatsapp">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+      <button class="tgl" data-p="arabic">
+        🌙 Arabic
+      </button>
+    </div>
+  </div>
+
+  <div class="s-section">
+    <div class="s-label">Extra Context</div>
+    <textarea id="extraCtx" style="min-height:58px;font-size:0.78rem" placeholder="Recent project, festival, specific need..."></textarea>
+  </div>
+
+  <button class="run-btn" id="runBtn" onclick="runSearch()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Find Leads & Generate Outreach
+  </button>
+</aside>
+<!-- MAIN -->
+<main class="main">
+<div class="main-pad">
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('leads',this)">🔍 Leads</button>
+    <button class="tab" onclick="switchTab('ff',this)">🎬 FilmFreeway</button>
+    <button class="tab" onclick="switchTab('tracker',this)">📋 Tracker</button>
+    <button class="tab" onclick="switchTab('booking',this)">📅 Booking Page</button>
+    <button class="tab" onclick="switchTab('finder',this)">🔎 Email Finder</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="sc"><div class="sc-num gold" id="sLeads">0</div><div class="sc-lbl">Leads Found</div></div>
+    <div class="sc"><div class="sc-num cyan" id="sSaved">0</div><div class="sc-lbl">Saved</div></div>
+    <div class="sc"><div class="sc-num green" id="sSent">0</div><div class="sc-lbl">Outreach Sent</div></div>
+    <div class="sc"><div class="sc-num purple" id="sReplied">0</div><div class="sc-lbl">Replied</div></div>
+  </div>
+
+  <!-- LEADS TAB -->
+  <div id="tab-leads">
+    <div id="leadsContent">
+      <div class="empty">
+        <div class="eicon">🎯</div>
+        <h3>Ready to hunt leads</h3>
+        <p>Add countries, pick your targets and channels, then hit Find Leads. The AI will generate scored leads with personalized outreach for every platform you selected.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILMFREEWAY TAB -->
+  <div id="tab-ff" style="display:none">
+    <div style="background:linear-gradient(135deg,rgba(255,184,0,0.05),rgba(0,212,255,0.04));border:1px solid rgba(255,184,0,0.12);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1.1rem;font-size:0.8rem;line-height:1.7;color:var(--muted)">
+      <strong style="color:var(--gold)">FilmFreeway Strategy —</strong> Many creators list public emails and social handles on their FilmFreeway profiles. Use the direct search links below to find them, then paste their info into the Email Finder tab to look up verified emails.
+    </div>
+    <div id="ffContent">
+      <div class="empty"><div class="eicon">🎬</div><h3>Add countries first</h3><p>Select countries in the sidebar to generate FilmFreeway search links per country and target type.</p></div>
+    </div>
+  </div>
+
+  <!-- TRACKER TAB -->
+  <div id="tab-tracker" style="display:none">
+    <div class="stats-bar" style="margin-bottom:1rem">
+      <div class="sc"><div class="sc-num gold" id="ts1">0</div><div class="sc-lbl">Total Saved</div></div>
+      <div class="sc"><div class="sc-num cyan" id="ts2">0</div><div class="sc-lbl">Contacted</div></div>
+      <div class="sc"><div class="sc-num green" id="ts3">0</div><div class="sc-lbl">Replied</div></div>
+      <div class="sc"><div class="sc-num purple" id="ts4">0</div><div class="sc-lbl">Converted</div></div>
+    </div>
+    <div class="rh">
+      <div class="rh-left">Your outreach pipeline</div>
+      <div class="rh-actions">
+        <button class="sm-btn" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="sm-btn" onclick="clearAll()">🗑 Clear All</button>
+      </div>
+    </div>
+    <div id="trackerContent"><div class="empty"><div class="eicon">📋</div><h3>No leads saved yet</h3><p>Find leads and save them here to track your outreach pipeline.</p></div></div>
+  </div>
+
+  <!-- BOOKING TAB -->
+  <div id="tab-booking" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+      <div class="booking-form">
+        <h3>Booking Page Generator</h3>
+        <p>Create a professional booking link to embed in all your outreach messages — lets clients schedule a discovery call or submit a project brief directly.</p>
+        <div class="field"><label class="fl">Your Name</label><input type="text" id="bkName" value="Ibrahim Abdul Mumeen (OfficialDanAIB)"></div>
+        <div class="field"><label class="fl">Tagline</label><input type="text" id="bkTag" value="2D/3D Character Artist & Animation Studio Head"></div>
+        <div class="field"><label class="fl">Session Duration</label>
+          <select id="bkDur"><option>15 minutes</option><option selected>30 minutes</option><option>45 minutes</option><option>1 hour</option></select>
+        </div>
+        <div class="field"><label class="fl">Session Type</label>
+          <select id="bkType"><option>Discovery Call</option><option>Project Brief Review</option><option>Portfolio Walkthrough</option><option>Collaboration Discussion</option></select>
+        </div>
+        <div class="field"><label class="fl">WhatsApp for bookings</label><input type="text" id="bkWA" value="+2347037572946"></div>
+        <div class="field"><label class="fl">Email for bookings</label><input type="text" id="bkEmail" value="themediaexcellency@gmail.com"></div>
+        <button class="run-btn" onclick="genBooking()" style="margin-top:0.5rem">Generate Booking Message</button>
+      </div>
+      <div>
+        <div class="booking-preview" id="bkPreview">
+          <strong>📅 Your booking message will appear here</strong>
+          Fill in the form and click Generate to create a professional booking CTA you can paste into every outreach message.
+        </div>
+        <div class="copy-link-row">
+          <input type="text" id="bkLink" readonly placeholder="Generated booking message..." style="font-size:0.72rem">
+          <button class="sm-btn" onclick="copyBooking()">Copy</button>
+        </div>
+        <div style="margin-top:1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem">
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:600;margin-bottom:0.5rem">💡 Where to use this</div>
+          <ul style="font-size:0.75rem;color:var(--muted);line-height:1.9;padding-left:1rem">
+            <li>End of every email outreach</li>
+            <li>Instagram DM follow-up</li>
+            <li>LinkedIn connection message</li>
+            <li>WhatsApp introduction</li>
+            <li>Your portfolio website footer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL FINDER TAB -->
+  <div id="tab-finder" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+      <div class="booking-form">
+        <h3>Email Finder</h3>
+        <p>Enter a person's name and their company/website domain to find their verified email address via Hunter.io. Requires a free Hunter.io API key in the sidebar.</p>
+        <div class="field"><label class="fl">Full Name</label><input type="text" id="fnName" placeholder="e.g. Mohammed Al-Rashid"></div>
+        <div class="field"><label class="fl">Company Domain</label><input type="text" id="fnDomain" placeholder="e.g. aljazeera.net or company.com"></div>
+        <div class="field"><label class="fl">Role / Title (optional)</label><input type="text" id="fnRole" placeholder="e.g. Film Director"></div>
+        <button class="run-btn" onclick="findEmail()" id="finderBtn">🔎 Find Email</button>
+        <div id="finderResult" style="margin-top:1rem"></div>
+      </div>
+      <div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem">
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:600;margin-bottom:0.75rem">🔍 How to find leads manually</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.9">
+            <div style="margin-bottom:0.5rem"><strong style="color:var(--text)">FilmFreeway</strong><br>Search filmfreeway.com → open a creator's profile → look for email/website in bio</div>
+            <div style="margin-bottom:0.5rem"><strong style="color:var(--text)">IMDb</strong><br>imdb.com → search name → check "Contact" or agency info in bio</div>
+            <div style="margin-bottom:0.5rem"><strong style="color:var(--text)">LinkedIn</strong><br>Search name + "film director Kuwait" → check contact info section</div>
+            <div><strong style="color:var(--text)">Instagram</strong><br>Search name → bio link often leads to website with email</div>
+          </div>
+        </div>
+        <div style="margin-top:0.85rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem">
+          <div style="font-size:0.75rem;color:var(--cyan);font-weight:600;margin-bottom:0.5rem">💡 Pro Tip</div>
+          <div style="font-size:0.75rem;color:var(--muted);line-height:1.7">After finding an email with Hunter.io, go back to the Leads tab, save that person as a lead, and the AI will generate a full personalized 3-email follow-up sequence for them.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main-pad -->
+</main>
+</div><!-- end app -->
+<script>
+// ============ STATE ============
+let countries=[];
+let activeT=new Set(['Film Directors','Screenwriters','Actors']);
+let activeP=new Set(['email','instagram','linkedin','whatsapp']);
+let savedLeads=[];
+let currentLeads=[];
+let storageReady=false;
+
+// ============ CLOUD STORAGE (window.storage) ============
+async function cloudSave(leads){
+  try{
+    await window.storage.set('danaib_leads',JSON.stringify(leads));
+  }catch(e){
+    // fallback to localStorage
+    localStorage.setItem('danaib_leads',JSON.stringify(leads));
+  }
+}
+async function cloudLoad(){
+  try{
+    const r=await window.storage.get('danaib_leads');
+    if(r&&r.value){return JSON.parse(r.value);}
+  }catch(e){}
+  // fallback to localStorage
+  try{return JSON.parse(localStorage.getItem('danaib_leads')||'[]');}catch(e){return [];}
+}
+
+// ============ TOAST ============
+function toast(msg,type='info',dur=3500){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='show '+type;
+  clearTimeout(el._t);el._t=setTimeout(()=>el.className='',dur);
+}
+
+// ============ COUNTRIES ============
+function addC(){
+  const v=document.getElementById('cInput').value.trim();
+  if(v&&!countries.includes(v)){countries.push(v);renderC();document.getElementById('cInput').value='';}
+}
+function addPreset(c){if(!countries.includes(c)){countries.push(c);renderC();}}
+function removeC(c){countries=countries.filter(x=>x!==c);renderC();renderFF();}
+function renderC(){
+  document.getElementById('cTags').innerHTML=countries.map(c=>`<span class="ctag" onclick="removeC('${c}')">${c} ✕</span>`).join('');
+  renderFF();
+}
+document.getElementById('cInput').addEventListener('keydown',e=>{if(e.key==='Enter')addC();});
+
+// ============ TOGGLES ============
+document.getElementById('tGrid').querySelectorAll('.tgl').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const t=b.dataset.t;
+    if(activeT.has(t)){if(activeT.size>1){activeT.delete(t);b.classList.remove('on');}}
+    else{activeT.add(t);b.classList.add('on');}
+  });
+});
+document.getElementById('pGrid').querySelectorAll('.tgl').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const p=b.dataset.p;
+    if(activeP.has(p)){if(activeP.size>1){activeP.delete(p);b.classList.remove('on','on-cyan');}}
+    else{activeP.add(p);b.classList.add('on','on-cyan');}
+  });
+});
+
+// ============ TABS ============
+function switchTab(t,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['leads','ff','tracker','booking','finder'].forEach(id=>{
+    const el=document.getElementById('tab-'+id);
+    if(el)el.style.display=id===t?'block':'none';
+  });
+  if(t==='tracker')renderTracker();
+}
+
+// ============ STATS ============
+function updateStats(){
+  document.getElementById('sLeads').textContent=currentLeads.length;
+  document.getElementById('sSaved').textContent=savedLeads.length;
+  document.getElementById('sSent').textContent=savedLeads.filter(l=>['contacted','replied','converted'].includes(l.status)).length;
+  document.getElementById('sReplied').textContent=savedLeads.filter(l=>['replied','converted'].includes(l.status)).length;
+  document.getElementById('ts1').textContent=savedLeads.length;
+  document.getElementById('ts2').textContent=savedLeads.filter(l=>l.status!=='new').length;
+  document.getElementById('ts3').textContent=savedLeads.filter(l=>['replied','converted'].includes(l.status)).length;
+  document.getElementById('ts4').textContent=savedLeads.filter(l=>l.status==='converted').length;
+}
+
+// ============ REAL GOOGLE SEARCH ============
+async function googleSearch(query,apiKey,cx,num=5){
+  const url=`https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}&num=${num}`;
+  const r=await fetch(url);
+  if(!r.ok)throw new Error(`Google API error: ${r.status}`);
+  const d=await r.json();
+  return d.items||[];
+}
+
+function extractLeadFromResult(item,targetType,country){
+  const title=item.title||'';
+  const snippet=item.snippet||'';
+  const link=item.link||'';
+  // Extract name — usually first part of title before dash/pipe
+  const nameParts=title.split(/[-|–—]/);
+  const name=(nameParts[0]||'').trim().replace(/\s+/g,' ');
+  // Extract email from snippet
+  const emailMatch=snippet.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  // Extract social handles
+  const igMatch=(snippet+title).match(/@([A-Za-z0-9_.]{3,30})/);
+  return {
+    name:name||'Contact',
+    role:targetType,
+    country:country,
+    project:snippet.slice(0,120)+'...',
+    source_url:link,
+    email:emailMatch?emailMatch[0]:'Find via profile',
+    instagram:igMatch?'@'+igMatch[1]:'Search Instagram',
+    linkedin:'Search LinkedIn: '+name,
+    twitter:'Search X: '+name,
+    whatsapp:'Contact via website',
+    score:null, // will be scored by AI
+    _raw_title:title,
+    _raw_snippet:snippet
+  };
+}
+
+// ============ MAIN SEARCH ============
+async function runSearch(){
+  if(!countries.length){toast('Add at least one country first','error');return;}
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true;
+  const gKey=document.getElementById('googleKey').value.trim();
+  const gCX=document.getElementById('googleCX').value.trim();
+  const platforms=[...activeP];
+  const targets=[...activeT];
+  const extra=document.getElementById('extraCtx').value;
+  const src=document.getElementById('srcSel').value;
+  const useArabic=activeP.has('arabic');
+  const useRealSearch=!!(gKey&&gCX);
+
+  const stepLabels=useRealSearch
+    ?['🌐 Running real Google searches...','📋 Extracting real profiles...','🎯 AI scoring leads...','✍️ Writing personalized outreach...','📧 Building follow-up sequences...']
+    :['⚡ Identifying prospects...','🎯 Scoring leads...','✍️ Writing outreach messages...','💬 Arabic translations...','📧 Building follow-up sequences...'];
+
+  document.getElementById('leadsContent').innerHTML=`
+    <div class="loading">
+      <div class="spin"></div>
+      <p>${useRealSearch?'Searching real contacts on Google...':'Generating targeted leads with AI...'}</p>
+      <div class="loading-steps">
+        ${stepLabels.map((s,i)=>`<div class="lstep${i===0?' active':''}" id="ls${i+1}">${s}</div>`).join('')}
+      </div>
+    </div>`;
+  switchTab('leads',document.querySelectorAll('.tab')[0]);
+
+  let si=0;
+  const stepTimer=setInterval(()=>{
+    if(si>0){const prev=document.getElementById('ls'+si);if(prev){prev.classList.remove('active');prev.classList.add('done');prev.textContent='✅ Done';}}
+    si++;
+    if(si<=stepLabels.length){const cur=document.getElementById('ls'+si);if(cur)cur.classList.add('active');}
+    if(si>stepLabels.length)clearInterval(stepTimer);
+  },1800);
+
+  try{
+    let realResults=[];
+
+    // REAL GOOGLE SEARCH
+    if(useRealSearch){
+      const queries=[];
+      countries.forEach(c=>{
+        targets.forEach(t=>{
+          const srcQ=src==='filmfreeway'?`site:filmfreeway.com ${t} ${c}`:
+                      src==='imdb'?`site:imdb.com ${t} ${c}`:
+                      src==='linkedin'?`site:linkedin.com/in ${t} ${c} animation storyboard`:
+                      `${t} ${c} animation storyboard contact email`;
+          queries.push({q:srcQ,t,c});
+        });
+      });
+      // Run searches (limit to avoid quota)
+      const searchPromises=queries.slice(0,4).map(({q,t,c})=>
+        googleSearch(q,gKey,gCX,5).then(items=>items.map(item=>extractLeadFromResult(item,t,c))).catch(()=>[])
+      );
+      const results=await Promise.all(searchPromises);
+      realResults=results.flat().filter(r=>r.name&&r.name.length>2);
+      // dedupe by name
+      const seen=new Set();
+      realResults=realResults.filter(r=>{if(seen.has(r.name))return false;seen.add(r.name);return true;});
+    }
+
+    // Now pass to AI — either to score real results OR generate profiles
+    const prompt=useRealSearch
+      ? buildPromptReal(realResults,platforms,extra,useArabic)
+      : buildPromptGenerate(countries,targets,platforms,extra,src,useArabic);
+
+    clearInterval(stepTimer);
+    ['ls1','ls2','ls3','ls4','ls5'].forEach((id,i)=>{
+      const el=document.getElementById(id);
+      if(el){el.className='lstep'+(i<3?' done':i===3?' active':'');el.textContent=i<3?'✅ Done':stepLabels[i]||'';}
+    });
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:4000,
+        system:`You are an elite outreach strategist for Ibrahim Abdul Mumeen (OfficialDanAIB), Nigerian 2D/3D character artist & animation studio head.
+Services: 2D/3D Character Design, Storyboarding, Animation, Pre-visualization, Visual Development, 3D CAD Design.
+Portfolio: https://drive.google.com/drive/folders/1buv-svyAWyhet5491I-MtGYYUoLkKtDs
+Fiverr: https://www.fiverr.com/ibrahimcadmodel
+Email: themediaexcellency@gmail.com | WhatsApp: +2347037572946 & +2349052125532
+Booking CTA: "Book a free 15-min call: wa.me/2347037572946"
+Output ONLY valid JSON. No markdown. No extra text.`,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+
+    const data=await res.json();
+    const raw=data.content?.find(b=>b.type==='text')?.text||'{}';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    currentLeads=parsed.leads||[];
+    renderLeads(currentLeads,[...activeP]);
+    updateStats();
+    const realTag=useRealSearch?' (from real Google search)':'';
+    toast(`${currentLeads.length} leads ready${realTag}`,'success');
+  }catch(e){
+    clearInterval(stepTimer);
+    document.getElementById('leadsContent').innerHTML=`<div class="empty"><div class="eicon">⚠️</div><h3>Error</h3><p>${e.message}</p><br><p style="font-size:0.75rem;color:var(--muted)">If using Google API, check your key and CX ID are correct.</p></div>`;
+    toast('Error: '+e.message,'error');
+  }
+  btn.disabled=false;
+}
+
+// Prompt when REAL Google results exist — AI scores & writes outreach for them
+function buildPromptReal(results,platforms,extra,useArabic){
+  const platList=platforms.filter(p=>p!=='arabic');
+  return `Here are REAL people found via Google search. Score each one and write personalized outreach for them.
+
+Real profiles:
+${JSON.stringify(results.slice(0,8),null,2)}
+
+Extra context: ${extra||'none'}
+Outreach platforms needed: ${platList.join(', ')}
+Arabic needed: ${useArabic}
+
+For each person:
+- Score 1-10 how likely they need animation/character art now
+- Write specific outreach using their REAL name, role, and project info from the snippet
+- Email: include Subject line, reference their actual work, pitch Ibrahim's services
+- WhatsApp: warm, direct, Gulf-friendly, booking CTA
+- Instagram DM: casual, max 3 sentences
+- LinkedIn: professional, 4 sentences
+- Arabic: Gulf-dialect WhatsApp if arabic=true
+- 3-email follow-up sequence (Day 1, Day 5, Day 12)
+
+Return JSON:
+{
+  "leads": [
+    {
+      "name": "Real name from search",
+      "role": "Their role",
+      "country": "Their country",
+      "project": "Their work from snippet",
+      "score": 8,
+      "score_reason": "Why this score",
+      "email": "email if found or Find via [source_url]",
+      "instagram": "@handle if found or Search Instagram",
+      "linkedin": "linkedin URL if found or Search LinkedIn",
+      "twitter": "@handle if found or Search on X",
+      "whatsapp": "number if public or Contact via website",
+      "source_url": "actual URL from search result",
+      "outreach": {
+        "email": "Subject: ...\\n\\n[body]",
+        "instagram": "DM text",
+        "linkedin": "message",
+        "whatsapp": "message with booking CTA",
+        "twitter": "DM",
+        "arabic": "Arabic WhatsApp if requested"
+      },
+      "sequence": {
+        "email1": "Subject: ...\\n\\n[Day 1]",
+        "email2": "Subject: ...\\n\\n[Day 5]",
+        "email3": "Subject: ...\\n\\n[Day 12]"
+      }
+    }
+  ]
+}`;
+}
+
+// Prompt when NO Google API — generate realistic profiles
+function buildPromptGenerate(countries,targets,platforms,extra,src,useArabic){
+  const platList=platforms.filter(p=>p!=='arabic');
+  return `Generate 8 realistic, highly targeted lead profiles.
+
+Target countries: ${countries.join(', ')}
+Target types: ${targets.join(', ')}
+Source: ${src}
+Platforms: ${platList.join(', ')}
+Arabic: ${useArabic}
+Extra: ${extra||'none'}
+
+IMPORTANT: Use realistic names, roles, and projects typical for these countries. For Gulf countries (Kuwait, UAE, Oman, Jordan, Qatar) use authentic Arabic names. For each person, generate real-looking FilmFreeway or IMDb style profile URLs.
+
+Score each lead 1-10 on how urgently they need animation services NOW.
+
+Return same JSON format as above with all outreach + sequence fields.
+{
+  "leads": [ ... ]
+}`;
+}
+
+// ============ RENDER LEADS ============
+function renderLeads(leads,platforms){
+  if(!leads.length){
+    document.getElementById('leadsContent').innerHTML=`<div class="empty"><div class="eicon">😕</div><h3>No leads found</h3><p>Try different countries or target types. If using Google API, check your key and CX ID.</p></div>`;
+    return;
+  }
+  const pIcons={email:'✉️',instagram:'📸',linkedin:'💼',whatsapp:'💬',twitter:'🐦',arabic:'🌙',sequence:'📅'};
+  const sorted=[...leads].sort((a,b)=>(b.score||0)-(a.score||0));
+  let html=`<div class="rh">
+    <div class="rh-left">Found <strong>${leads.length}</strong> leads — sorted by score</div>
+    <div class="rh-actions">
+      <button class="sm-btn" onclick="exportCSV()">⬇ CSV</button>
+      <button class="sm-btn" onclick="saveAll()">💾 Save All</button>
+    </div>
+  </div>`;
+
+  sorted.forEach((l,si)=>{
+    const idx=leads.indexOf(l);
+    const initials=l.name.split(' ').map(w=>w[0]||'').slice(0,2).join('').toUpperCase()||'??';
+    const sc=l.score||5;
+    const scoreCls=sc>=8?'score-high':sc>=6?'score-mid':'score-low';
+    const scoreLabel=sc>=8?'🔥 Hot':sc>=6?'⭐ Good':'💡 Warm';
+
+    html+=`<div class="lcard" id="lcard-${idx}">
+      <div class="lcard-head">
+        <div class="avatar">${initials}</div>
+        <div class="lcard-info">
+          <div class="lcard-name">${l.name}<span class="score-pill ${scoreCls}">${scoreLabel} ${sc}/10</span></div>
+          <div class="lcard-role">${l.role}</div>
+          <div class="lcard-meta">📍 ${l.country} · ${l.project||''}</div>
+          <div class="score-bar-wrap">
+            <div class="score-bar"><div class="score-fill" style="width:${sc*10}%"></div></div>
+            <span class="score-txt">${l.score_reason||''}</span>
+          </div>
+        </div>
+        <div class="lcard-btns">
+          <button class="lb" id="savebtn-${idx}" onclick="saveLead(${idx})">+ Save</button>
+          <button class="lb primary" onclick="toggleOutreach(${idx})">✍️ Outreach</button>
+        </div>
+      </div>
+      <div class="lcard-contacts">`;
+
+    // Contact chips
+    if(l.email&&l.email!=''){
+      const isReal=!l.email.includes('Find')&&!l.email.includes('Search');
+      html+=`<span class="chip ${isReal?'gold-chip chip-real':''}" onclick="navigator.clipboard.writeText('${l.email}').then(()=>toast('Email copied','success'))">✉️ ${l.email}</span>`;
+    }
+    if(l.instagram)html+=`<span class="chip">📸 ${l.instagram}</span>`;
+    if(l.linkedin){
+      const lnkHref=l.linkedin.startsWith('http')?l.linkedin:'https://'+l.linkedin;
+      html+=l.linkedin.includes('Search')?`<span class="chip">💼 ${l.linkedin}</span>`:`<a class="chip" href="${lnkHref}" target="_blank">💼 ${l.linkedin}</a>`;
+    }
+    if(l.twitter)html+=`<span class="chip">🐦 ${l.twitter}</span>`;
+    if(l.source_url)html+=`<a class="chip chip-real" href="${l.source_url}" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>View Real Profile</a>`;
+
+    html+=`</div>
+      <div class="opanel" id="opanel-${idx}">
+        <div class="otabs" id="otabs-${idx}">`;
+
+    const allP=[...platforms.filter(p=>p!=='arabic'),'arabic','sequence'];
+    let firstRendered=null;
+    allP.forEach((p,pi)=>{
+      const hasMsg=p==='sequence'
+        ?(l.sequence&&(l.sequence.email1||l.sequence.email2))
+        :(l.outreach&&l.outreach[p]);
+      if(!hasMsg)return;
+      if(!firstRendered)firstRendered=p;
+      html+=`<button class="otab${firstRendered===p?' on':''}" onclick="switchOTab(${idx},'${p}',this)">${pIcons[p]||'📋'} ${p}</button>`;
+    });
+    html+=`</div>`;
+
+    allP.forEach((p,pi)=>{
+      let msg='';
+      if(p==='sequence'&&l.sequence){
+        msg=`── DAY 1 (Send immediately) ──\n${l.sequence.email1||''}\n\n── DAY 5 (No reply follow-up) ──\n${l.sequence.email2||''}\n\n── DAY 12 (Final value nudge) ──\n${l.sequence.email3||''}`;
+      } else if(l.outreach&&l.outreach[p]){
+        msg=l.outreach[p];
+      }
+      if(!msg)return;
+      const isAr=p==='arabic';
+      const isFirst=p===firstRendered;
+      html+=`<div class="omsg" id="omsg-${idx}-${p}" style="display:${isFirst?'block':'none'};${isAr?'direction:rtl;text-align:right;':''}">${msg}</div>`;
+    });
+
+    const fpanel=firstRendered||'email';
+    const hasWA=l.outreach?.whatsapp&&!l.outreach.whatsapp.includes('Contact');
+    const hasEmail=l.email&&!l.email.includes('Find')&&!l.email.includes('Search');
+    html+=`<div class="oactions">
+      <button class="oa-btn oa-copy" id="copybtn-${idx}" onclick="copyOMsg(${idx},'${fpanel}')">📋 Copy</button>
+      ${hasWA?`<a class="oa-btn oa-wa" href="https://wa.me/?text=${encodeURIComponent(l.outreach?.whatsapp||'')}" target="_blank">💬 Send WhatsApp</a>`:''}
+      ${hasEmail?`<a class="oa-btn oa-mail" href="mailto:${l.email}?subject=${encodeURIComponent('Animation Collaboration — DanAIB Studio')}&body=${encodeURIComponent(l.outreach?.email||'')}" target="_blank">📧 Open in Mail</a>`:''}
+      <button class="oa-btn oa-seq" onclick="showSeq(${idx})">📅 Full Sequence</button>
+    </div>
+    </div>
+    </div>`;
+  });
+  document.getElementById('leadsContent').innerHTML=html;
+}
+
+function toggleOutreach(i){document.getElementById('opanel-'+i).classList.toggle('open');}
+function showSeq(i){
+  const panel=document.getElementById('opanel-'+i);
+  panel.classList.add('open');
+  const seqBtn=Array.from(document.querySelectorAll(`#otabs-${i} .otab`)).find(b=>b.textContent.includes('sequence'));
+  if(seqBtn)switchOTab(i,'sequence',seqBtn);
+}
+function switchOTab(i,p,btn){
+  const allP=[...activeP,'arabic','sequence'];
+  allP.forEach(pp=>{const el=document.getElementById(`omsg-${i}-${pp}`);if(el)el.style.display='none';});
+  const sel=document.getElementById(`omsg-${i}-${p}`);if(sel)sel.style.display='block';
+  document.querySelectorAll(`#otabs-${i} .otab`).forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const cb=document.getElementById(`copybtn-${i}`);
+  if(cb)cb.onclick=()=>copyOMsg(i,p);
+}
+function copyOMsg(i,p){
+  const el=document.getElementById(`omsg-${i}-${p}`);
+  if(!el)return;
+  navigator.clipboard.writeText(el.textContent).then(()=>toast('Copied!','success'));
+}
+
+// ============ SAVE LEADS (CLOUD) ============
+async function saveLead(i){
+  const l=currentLeads[i];
+  if(!l)return;
+  if(savedLeads.find(s=>s.name===l.name)){toast('Already in pipeline','info');return;}
+  savedLeads.push({...l,status:'new',savedAt:Date.now()});
+  await cloudSave(savedLeads);
+  const btn=document.getElementById('savebtn-'+i);
+  if(btn){btn.textContent='✅ Saved';btn.disabled=true;}
+  updateStats();
+  toast(`${l.name} saved to cloud pipeline`,'success');
+}
+async function saveAll(){
+  let added=0;
+  currentLeads.forEach(l=>{
+    if(!savedLeads.find(s=>s.name===l.name)){savedLeads.push({...l,status:'new',savedAt:Date.now()});added++;}
+  });
+  await cloudSave(savedLeads);
+  updateStats();
+  toast(`${added} leads saved to cloud`,'success');
+}
+
+// ============ TRACKER ============
+function renderTracker(){
+  updateStats();
+  const el=document.getElementById('trackerContent');
+  if(!savedLeads.length){
+    el.innerHTML='<div class="empty"><div class="eicon">📋</div><h3>No saved leads</h3><p>Find leads and save them to track your outreach pipeline.</p></div>';
+    return;
+  }
+  const sorted=[...savedLeads].sort((a,b)=>(b.score||0)-(a.score||0));
+  el.innerHTML=sorted.map((l,si)=>{
+    const ri=savedLeads.indexOf(l);
+    const initials=l.name.split(' ').map(w=>w[0]||'').slice(0,2).join('').toUpperCase()||'??';
+    const sc=l.score||5;
+    return`<div class="trk-card">
+      <div class="trk-avatar">${initials}</div>
+      <div class="trk-info">
+        <div class="trk-name">${l.name} <span class="score-pill ${sc>=8?'score-high':sc>=6?'score-mid':'score-low'}" style="font-size:0.62rem">${sc}/10</span></div>
+        <div class="trk-sub">${l.role} · ${l.country}${l.email&&!l.email.includes('Find')?` · <span style="color:var(--gold)">${l.email}</span>`:''}</div>
+      </div>
+      <div class="trk-right">
+        <select class="status-sel" onchange="updateStatus(${ri},this.value)">
+          <option value="new"${l.status==='new'?' selected':''}>🔵 New</option>
+          <option value="contacted"${l.status==='contacted'?' selected':''}>🟡 Contacted</option>
+          <option value="replied"${l.status==='replied'?' selected':''}>🟢 Replied</option>
+          <option value="converted"${l.status==='converted'?' selected':''}>⭐ Converted</option>
+          <option value="cold"${l.status==='cold'?' selected':''}>❄️ Cold</option>
+        </select>
+        <button class="del-btn" onclick="deleteLead(${ri})">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function updateStatus(i,s){
+  savedLeads[i].status=s;
+  await cloudSave(savedLeads);
+  updateStats();
+}
+async function deleteLead(i){
+  if(!confirm('Remove this lead?'))return;
+  savedLeads.splice(i,1);
+  await cloudSave(savedLeads);
+  renderTracker();
+  updateStats();
+}
+async function clearAll(){
+  if(!confirm('Clear ALL saved leads? This cannot be undone.'))return;
+  savedLeads=[];
+  await cloudSave(savedLeads);
+  renderTracker();
+  updateStats();
+}
+
+// ============ FILMFREEWAY ============
+function renderFF(){
+  const el=document.getElementById('ffContent');
+  if(!countries.length){el.innerHTML='<div class="empty"><div class="eicon">🎬</div><h3>Add countries first</h3></div>';return;}
+  const targets=[...activeT];
+  let html='<div class="ff-grid">';
+  countries.forEach(c=>{
+    targets.forEach(t=>{
+      const q1=encodeURIComponent(`"${t}" "${c}" site:filmfreeway.com`);
+      const q2=encodeURIComponent(`"${t}" "${c}" animation storyboard "contact" OR "email"`);
+      const q3=encodeURIComponent(`"${t}" "${c}" site:linkedin.com/in`);
+      const q4=encodeURIComponent(`"${t}" "${c}" film festival 2025`);
+      const q5=encodeURIComponent(`"${t}" "${c}" site:imdb.com`);
+      html+=`<div class="ff-card">
+        <div class="ff-card-title">🌍 ${c} — ${t}</div>
+        <div class="ff-card-sub">Real search links — click to find actual profiles with contact info</div>
+        <div class="ff-links">
+          <a class="ff-link" href="https://www.google.com/search?q=${q1}" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            FilmFreeway profiles
+          </a>
+          <a class="ff-link" href="https://www.google.com/search?q=${q5}" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            IMDb profiles
+          </a>
+          <a class="ff-link" href="https://www.google.com/search?q=${q3}" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn profiles
+          </a>
+          <a class="ff-link" href="https://www.google.com/search?q=${q2}" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Contact & email search
+          </a>
+          <a class="ff-link" href="https://www.google.com/search?q=${q4}" target="_blank">🎬 Film festivals ${c} 2025</a>
+        </div>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ============ BOOKING ============
+function genBooking(){
+  const name=document.getElementById('bkName').value;
+  const tag=document.getElementById('bkTag').value;
+  const dur=document.getElementById('bkDur').value;
+  const type=document.getElementById('bkType').value;
+  const wa=document.getElementById('bkWA').value;
+  const email=document.getElementById('bkEmail').value;
+  const msg=`📅 Book a Free ${dur} ${type} with ${name}
+${tag}
+
+I'd love to learn more about your project and show you exactly how animation can elevate it.
+
+👉 WhatsApp me directly: ${wa}
+📧 Email: ${email}
+🎨 Portfolio: https://drive.google.com/drive/folders/1buv-svyAWyhet5491I-MtGYYUoLkKtDs
+🛒 Fiverr: https://www.fiverr.com/ibrahimcadmodel
+
+Available Mon–Sat. Reply and I'll confirm within 24 hours.`;
+  document.getElementById('bkPreview').innerHTML=`<strong>📅 Your Booking CTA — paste this at the end of every outreach</strong><br><br><div style="white-space:pre-wrap;color:var(--text);font-size:0.8rem">${msg}</div>`;
+  document.getElementById('bkLink').value=msg;
+  toast('Booking CTA ready — copy and paste into outreach','success');
+}
+function copyBooking(){
+  const v=document.getElementById('bkLink').value;
+  if(!v){toast('Generate booking message first','error');return;}
+  navigator.clipboard.writeText(v).then(()=>toast('Booking CTA copied!','success'));
+}
+
+// ============ EMAIL FINDER ============
+async function findEmail(){
+  const name=document.getElementById('fnName').value.trim();
+  const domain=document.getElementById('fnDomain').value.trim().replace(/^https?:\/\//,'').replace(/\/.*/,'');
+  const key=document.getElementById('hunterKey').value.trim();
+  const res=document.getElementById('finderResult');
+  if(!name||!domain){toast('Enter both name and domain','error');return;}
+
+  if(!key){
+    const q1=encodeURIComponent(`"${name}" "${domain}" email`);
+    const q2=encodeURIComponent(`"${name}" contact ${domain}`);
+    const q3=encodeURIComponent(`${name} email address`);
+    res.innerHTML=`<div style="background:rgba(255,184,0,0.05);border:1px solid rgba(255,184,0,0.2);border-radius:10px;padding:1rem">
+      <div style="color:var(--gold);font-weight:600;margin-bottom:0.5rem">⚠️ Add Hunter.io key for instant lookup. Using Google strategy instead:</div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem">
+        <a href="https://www.google.com/search?q=${q1}" target="_blank" class="ff-link">🔍 "${name}" email at ${domain}</a>
+        <a href="https://www.google.com/search?q=${q2}" target="_blank" class="ff-link">🔍 Contact page search</a>
+        <a href="https://www.google.com/search?q=${q3}" target="_blank" class="ff-link">🔍 General email search</a>
+        <a href="https://hunter.io/email-finder?first_name=${encodeURIComponent(name.split(' ')[0])}&last_name=${encodeURIComponent(name.split(' ').slice(1).join(' '))}&domain=${domain}" target="_blank" class="ff-link">🔗 Try Hunter.io (free web app)</a>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const btn=document.getElementById('finderBtn');
+  btn.disabled=true;btn.textContent='Searching...';
+  try{
+    const parts=name.trim().split(' ');
+    const url=`https://api.hunter.io/v2/email-finder?domain=${domain}&first_name=${encodeURIComponent(parts[0])}&last_name=${encodeURIComponent(parts.slice(1).join(' '))}&api_key=${key}`;
+    const r=await fetch(url);
+    const d=await r.json();
+    if(d.data?.email){
+      const em=d.data.email;const conf=d.data.score||0;
+      res.innerHTML=`<div style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.25);border-radius:10px;padding:1rem">
+        <div style="color:var(--green);font-weight:700;margin-bottom:0.3rem">✅ Email Found!</div>
+        <div style="font-size:0.95rem;color:var(--text);margin-bottom:0.3rem;font-weight:600">${em}</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem">Confidence: ${conf}% · ${d.data.verification?.status||'unverified'}</div>
+        <button class="run-btn" style="padding:0.5rem;font-size:0.82rem" onclick="navigator.clipboard.writeText('${em}').then(()=>toast('Email copied!','success'))">📋 Copy Email</button>
+      </div>`;
+      toast('Email found: '+em,'success');
+    }else{
+      res.innerHTML=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;font-size:0.82rem;color:var(--muted)">No email found for <strong>${name}</strong> at <strong>${domain}</strong>.<br><br>Try their website directly, check their social bio, or search LinkedIn for a company email pattern.</div>`;
+    }
+  }catch(e){
+    res.innerHTML=`<div style="color:var(--red);font-size:0.8rem;padding:0.5rem">Error: ${e.message}</div>`;
+  }
+  btn.disabled=false;btn.textContent='🔎 Find Email';
+}
+
+// ============ EXPORT ============
+function exportCSV(){
+  const leads=savedLeads.length?savedLeads:currentLeads;
+  if(!leads.length){toast('No leads to export','error');return;}
+  const rows=[['Name','Role','Country','Project','Score','Score Reason','Email','Instagram','LinkedIn','Twitter','WhatsApp','Source URL','Status','Saved At']];
+  leads.forEach(l=>rows.push([
+    l.name,l.role,l.country,l.project,l.score||'',l.score_reason||'',
+    l.email||'',l.instagram||'',l.linkedin||'',l.twitter||'',l.whatsapp||'',
+    l.source_url||'',l.status||'new',
+    l.savedAt?new Date(l.savedAt).toLocaleDateString():''
+  ]));
+  const csv=rows.map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`danaib_leads_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('CSV exported!','success');
+}
+
+// ============ INIT ============
+(async()=>{
+  savedLeads=await cloudLoad();
+  updateStats();
+  renderFF();
+  toast('Pipeline loaded from cloud','success',2000);
+})();
+</script>
+</body>
+</html>
